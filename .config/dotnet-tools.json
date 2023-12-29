@@ -7,6 +7,12 @@
       "commands": [
         "paket"
       ]
+    },
+    "evolve.tool": {
+      "version": "3.2.0",
+      "commands": [
+        "evolve"
+      ]
     }
   }
 }
