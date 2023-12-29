@@ -1,7 +1,9 @@
 ﻿module Server
 
+open Database
 open Saturn
 open Config
+open Microsoft.Extensions.DependencyInjection
 
 let endpointPipe = pipeline {
     plug head
@@ -17,6 +19,7 @@ let app = application {
     use_static "static"
     use_gzip
     use_config (fun _ -> { connectionString = "DataSource=database.sqlite" })
+    service_config (fun s -> s.AddScoped<SqlConnectionFactory>(fun _ -> new SqlConnectionFactory("DataSource=database.sqlite")))
 }
 
 [<EntryPoint>]

@@ -1,6 +1,7 @@
 source https://api.nuget.org/v3/index.json
 
 storage: none
+nuget Akka.FSharp
 nuget Dapper
 nuget Giraffe
 nuget Giraffe.Htmx

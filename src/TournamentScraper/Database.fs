@@ -1,8 +1,14 @@
 ﻿module Database
 
+open System
+open System.Data
 open Dapper
 open System.Data.Common
 open System.Collections.Generic
+open Microsoft.AspNetCore.Http
+open Microsoft.Data.Sqlite
+open Microsoft.Extensions.DependencyInjection
+open Saturn
 
 let inline (=>) k v = k, box v
 
@@ -40,3 +46,25 @@ let querySingle (connection: #DbConnection) (sql: string) (parameters: IDictiona
         with
         | ex -> return Error ex
     }
+
+type SqlConnectionFactory(connectionString: string) =
+    let mutable connection: DbConnection option = None
+    member _.GetOpenConnectionAsync() =
+        task {
+            match connection with
+            | Some(c) when c.State = ConnectionState.Open ->
+                return c
+            | _ ->
+                let c: DbConnection = new SqliteConnection(connectionString)
+                do! c.OpenAsync()
+                connection <- Some(c)
+                return c
+        }
+    interface IDisposable with
+        member _.Dispose() =
+            connection |> Option.iter (fun c ->
+                if c.State = ConnectionState.Open then c.Dispose()
+            )
+
+let getConnection (ctx: HttpContext) =
+    ctx.RequestServices.GetRequiredService<SqlConnectionFactory>().GetOpenConnectionAsync()

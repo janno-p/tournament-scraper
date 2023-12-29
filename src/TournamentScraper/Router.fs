@@ -1,8 +1,8 @@
 ﻿module Router
 
-open Microsoft.AspNetCore.Http.HttpResults
 open Saturn
 open Giraffe.Core
+open TournamentScraper.Tournaments.Controllers
 
 let browser = pipeline {
     plug (mustAccept ["text/html"])
@@ -21,6 +21,7 @@ let browserRouter = router {
     not_found_handler (htmlView NotFound.layout)
     pipe_through browser
     forward "" defaultView
+    forward "/tournaments" TournamentController
 }
 
 let appRouter = router {
