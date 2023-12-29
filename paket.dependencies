@@ -1,0 +1,11 @@
+source https://api.nuget.org/v3/index.json
+
+storage: none
+nuget Dapper
+nuget Giraffe
+nuget Giraffe.Htmx
+nuget Giraffe.ViewEngine.Htmx
+nuget Microsoft.Data.Sqlite
+nuget Saturn
+nuget Selenium.WebDriver
+nuget Selenium.WebDriver.GeckoDriver
