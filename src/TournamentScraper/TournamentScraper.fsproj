@@ -10,7 +10,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.fs" />
+    <Compile Include="Dapper.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Scraper.fs" />
     <Compile Include="Tournaments\Models.fs" />
