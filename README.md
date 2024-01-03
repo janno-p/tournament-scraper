@@ -1,7 +1,19 @@
 # tournament-scraper
 
+## Setup environment
+
+```powershell
+npm install
+```
+
 ## Initialize database
 
 ```powershell
-dotnet evolve migrate '@args.txt'
+npm run migrate
+```
+
+## Run development environment
+
+```powershell
+npm run watch
 ```

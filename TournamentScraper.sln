@@ -7,6 +7,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FF0C98B9-677
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TournamentScraper", "src\TournamentScraper\TournamentScraper.fsproj", "{D8FCF75F-78BC-44D4-BB46-0D8C6111C3DC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{A1F94C7E-E44E-4CCD-AE2B-BAF90BE75FD2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		package.json = package.json
+		style.css = style.css
+		tailwind.config.js = tailwind.config.js
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

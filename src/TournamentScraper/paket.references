@@ -5,6 +5,5 @@ Giraffe.ViewEngine
 Giraffe.ViewEngine.Htmx
 Microsoft.Data.Sqlite
 Saturn
-Selenium.WebDriver
-Selenium.WebDriver.GeckoDriver
 Akka.FSharp
+Microsoft.Playwright

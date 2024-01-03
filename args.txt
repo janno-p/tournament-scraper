@@ -1,1 +1,1 @@
-sqlite -c "DataSource=database.sqlite" -l migrations
+sqlite -c "DataSource=src/TournamentScraper/database.sqlite" -l migrations

@@ -13,6 +13,12 @@
       "commands": [
         "evolve"
       ]
+    },
+    "microsoft.playwright.cli": {
+      "version": "1.2.3",
+      "commands": [
+        "playwright"
+      ]
     }
   }
 }

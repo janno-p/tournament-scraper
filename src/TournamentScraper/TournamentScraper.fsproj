@@ -12,20 +12,20 @@
   <ItemGroup>
     <Compile Include="Dapper.fs" />
     <Compile Include="Database.fs" />
+    <Compile Include="Playwright.fs" />
     <Compile Include="Scraper.fs" />
-    <Compile Include="Tournaments\Models.fs" />
-    <Compile Include="Tournaments\Views.fs" />
-    <Compile Include="Tournaments\Controllers.fs" />
     <Compile Include="Templates\App.fs" />
     <Compile Include="Templates\Index.fs" />
     <Compile Include="Templates\InternalError.fs" />
     <Compile Include="Templates\NotFound.fs" />
+    <Compile Include="Tournaments\Models.fs" />
+    <Compile Include="Tournaments\Views.fs" />
+    <Compile Include="Tournaments\Controllers.fs" />
     <Compile Include="Router.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\*.sqlite">
-      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    <Content Include="*.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

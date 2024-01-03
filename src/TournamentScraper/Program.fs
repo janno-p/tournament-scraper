@@ -2,6 +2,7 @@
 
 open Dapper
 open Saturn
+open Scraper
 
 let endpointPipe = pipeline {
     plug head
@@ -17,6 +18,7 @@ let app = application {
     use_static "static"
     use_gzip
     use_dapper "DataSource=database.sqlite"
+    use_scraper
 }
 
 [<EntryPoint>]

@@ -7,6 +7,5 @@ nuget Giraffe
 nuget Giraffe.Htmx
 nuget Giraffe.ViewEngine.Htmx
 nuget Microsoft.Data.Sqlite
+nuget Microsoft.Playwright
 nuget Saturn
-nuget Selenium.WebDriver
-nuget Selenium.WebDriver.GeckoDriver

@@ -1,22 +1,45 @@
-﻿module TournamentScraper.Scraper
+﻿module Scraper
 
+open System
 open Akka.Configuration
+open Akka.Dispatch
 open Akka.FSharp
+open Dapper
+open Microsoft.AspNetCore.Http
+open Microsoft.Extensions.DependencyInjection
+open Saturn.Application
 
 type ScraperActorMessages =
-    | LoadUrl of string
+    | ReloadTournaments
 
 let system = System.create "ScraperSystem" <| ConfigurationFactory.Default()
 
-let scraper =
+let createScraper (applicationServices: IServiceProvider) =
     spawn system "ScraperActor"
     <| fun mailbox ->
         let rec loop() =
             actor {
                 let! message = mailbox.Receive()
                 match message with
-                | LoadUrl(url) ->
-                    printfn $"Loading url %s{url}"
-                    return! loop()
+                | ReloadTournaments ->
+                    ActorTaskScheduler.RunTask(System.Func<System.Threading.Tasks.Task>(fun () -> task {
+                        use scope = applicationServices.CreateScope()
+                        let! connection = scope.ServiceProvider.GetRequiredService<SqlConnectionFactory>().GetOpenConnectionAsync()
+                        printfn "Reloading tournaments ..."
+                        let! count = Playwright.updateTournaments connection
+                        printfn $"Total of {count} tournaments updated"
+                    }))
+                return! loop()
             }
         loop()
+
+type ApplicationBuilder with
+    [<CustomOperation("use_scraper")>]
+    member this.UseScraper(state: ApplicationState) =
+        let service (s: IServiceCollection) = s.AddSingleton<Akka.Actor.IActorRef>(createScraper)
+        { state with
+            ServicesConfig = service::state.ServicesConfig 
+        }
+
+let getScraper (ctx: HttpContext) =
+    ctx.RequestServices.GetRequiredService<Akka.Actor.IActorRef>()

@@ -8,9 +8,9 @@ let layout (content: XmlNode list) =
             meta [_charset "utf-8"]
             meta [_name "viewport"; _content "width=device-width, initial-scale=1"]
             title [] [encodedText "Hello SaturnServer"]
-            link [_rel "stylesheet"; _href "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"]
-            link [_rel "stylesheet"; _href "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css"]
-            link [_rel "stylesheet"; _href "/app.css"]
+            link [_rel "stylesheet"; _type "text/css"; _href "/style.css"]
+            script [_src "/htmx@1.9.10.min.js"] []
+            script [_src "/_hyperscript@0.9.12.min.js"] []
         ]
         body [] [
             yield nav [_class "navbar is-fixed-top has-shadow"] [
@@ -43,6 +43,5 @@ let layout (content: XmlNode list) =
                     ]
                 ]
             ]
-            yield script [_src "/app.js"] []
         ]
     ]
