@@ -1,8 +1,9 @@
 ﻿module Router
 
 open Saturn
-open Giraffe.Core
+open Giraffe
 open TournamentScraper.Tournaments.Controllers
+open Sse
 
 let browser = pipeline {
     plug (mustAccept ["text/html"])
@@ -21,9 +22,10 @@ let browserRouter = router {
     not_found_handler (htmlView NotFound.layout)
     pipe_through browser
     forward "" defaultView
-    forward "/tournaments" TournamentController
+    forward "/tournaments" tournamentRoutes
 }
 
 let appRouter = router {
     forward "" browserRouter
+    forward "/sse" sseRouter
 }

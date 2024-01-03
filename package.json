@@ -4,8 +4,9 @@
         "csswatch": "npx tailwindcss -i ./style.css -o ./src/TournamentScraper/static/style.css --watch",
         "fsbuild": "dotnet build",
         "build": "npm run fsbuild && dotnet run",
-        "watch": "start npm run csswatch & start dotnet watch run --project src/TournamentScraper/TournamentScraper.fsproj",
-        "migrate": "powershell dotnet evolve migrate '@args.txt'"
+        "watch": "start npm run csswatch & start npm run fswatch",
+        "migrate": "powershell dotnet evolve migrate '@args.txt'",
+        "fswatch": "dotnet watch run --project src/TournamentScraper/TournamentScraper.fsproj"
     },
     "devDependencies": {
         "tailwindcss": "^3.4.0"

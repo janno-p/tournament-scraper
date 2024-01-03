@@ -8,6 +8,11 @@ open Dapper
 open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.DependencyInjection
 open Saturn.Application
+open Giraffe.ViewEngine
+open Giraffe.ViewEngine.Htmx
+
+let reloadTournamentsButton =
+    button [_hxPost "/tournaments/reload"; _hxSwap "outerHTML"] [rawText "Reload tournaments"]
 
 type ScraperActorMessages =
     | ReloadTournaments
@@ -28,6 +33,7 @@ let createScraper (applicationServices: IServiceProvider) =
                         printfn "Reloading tournaments ..."
                         let! count = Playwright.updateTournaments connection
                         printfn $"Total of {count} tournaments updated"
+                        Sse.enqueue (Sse.TournamentsLoaded reloadTournamentsButton)
                     }))
                 return! loop()
             }
