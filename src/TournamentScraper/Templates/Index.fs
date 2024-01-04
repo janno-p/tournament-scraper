@@ -58,5 +58,5 @@ let index =
         ]
     ]
 
-let layout =
-    App.layout index
+let layout ctx =
+    App.layout index ctx

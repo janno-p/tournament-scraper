@@ -2,6 +2,12 @@
 
 open Giraffe.ViewEngine
 
+let view = [
+    h1 [] [rawText "ERROR #404"]
+    a [_href "/"] [rawText "Go back to home page"]
+]
+
+(*
 let layout =
     html [_class "has-navbar-fixed-top"] [
         head [] [
@@ -9,8 +15,9 @@ let layout =
             meta [_name "viewport"; _content "width=device-width, initial-scale=1"]
             title [] [encodedText "SaturnServer - Error #404"]
         ]
-        body [] [
-            h1 [] [rawText "ERROR #404"]
-            a [_href "/"] [rawText "Go back to home page"]
-        ]
+        body [] view
     ]
+*)
+
+let layout ctx =
+    App.layout [MainContent.layout view] ctx

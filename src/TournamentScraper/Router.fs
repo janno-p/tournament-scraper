@@ -13,13 +13,13 @@ let browser = pipeline {
 }
 
 let defaultView = router {
-    get "/" (htmlView Index.layout)
+    get "/" (fun next ctx -> htmlView (Index.layout ctx) next ctx)
     get "/index.html" (redirectTo false "/")
     get "/default.html" (redirectTo false "/")
 }
 
 let browserRouter = router {
-    not_found_handler (htmlView NotFound.layout)
+    not_found_handler (fun next ctx -> htmlView (NotFound.layout ctx) next ctx)
     pipe_through browser
     forward "" defaultView
     forward "/tournaments" tournamentRoutes

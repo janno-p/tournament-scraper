@@ -25,7 +25,7 @@ module View =
         button [_hxPost $"/tournaments/{id:D}/reload"; _hxSwap "outerHTML"] [encodedText "Reload tournament"]
     
     let index (tournaments: Tournament list) : XmlNode =
-        div [] [
+        MainContent.layout [
             reloadTournamentsButton
             ul [_class "border mt-4"] (tournaments |> List.map tournamentRow)
         ]

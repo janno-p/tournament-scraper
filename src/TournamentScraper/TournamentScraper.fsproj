@@ -15,6 +15,7 @@
     <Compile Include="Playwright.fs" />
     <Compile Include="Sse.fs" />
     <Compile Include="Templates\App.fs" />
+    <Compile Include="Templates\MainContent.fs" />
     <Compile Include="Templates\Index.fs" />
     <Compile Include="Templates\InternalError.fs" />
     <Compile Include="Templates\NotFound.fs" />
@@ -28,6 +29,9 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\tailwind.config.js">
+      <Link>tailwind.config.js</Link>
+    </Content>
     <Content Include="*.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

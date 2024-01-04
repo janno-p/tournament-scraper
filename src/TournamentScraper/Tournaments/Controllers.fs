@@ -12,7 +12,7 @@ let private tournaments =
         task {
             let! tournaments = Model.find ctx
             let view = View.index tournaments
-            return! Controller.renderHtml ctx (App.layout [view])
+            return! Controller.renderHtml ctx (App.layout [view] ctx)
         }
 
 let private reload : HttpHandler =
@@ -28,8 +28,8 @@ let private reloadTournament (key: Guid) : HttpHandler =
 let private tournament (ctx: HttpContext) (key: Guid) =
     task {
         let! tournament = Model.get ctx key
-        let view = tournament |> Option.map View.show |> Option.defaultWith (fun _ -> NotFound.layout)
-        return! Controller.renderHtml ctx (App.layout [view])
+        let view = tournament |> Option.map View.show |> Option.defaultWith (fun _ -> NotFound.layout ctx)
+        return! Controller.renderHtml ctx (App.layout [view] ctx)
     }
 
 let private TournamentController =
