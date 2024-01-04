@@ -131,9 +131,13 @@ type TournamentData = {
     Id: Guid
     Url: string
     Name: string
-    StartDate: DateOnly
-    EndDate: DateOnly
+    StartDate: int64
+    EndDate: int64
 }
+
+module DateOnly =
+    let toUnixTime (d: DateOnly) =
+        DateTimeOffset(d.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)).ToUnixTimeSeconds()
 
 module private TournamentData =
     let fromRow (year: uint) (value: TournamentInfo) =
@@ -142,8 +146,8 @@ module private TournamentData =
             Id = Guid.Parse((QueryHelpers.ParseQuery(Uri(baseUri, value.Url).Query)["id"]).ToString())
             Url = value.Url
             Name = value.Name
-            StartDate = range[0]
-            EndDate = range[1] 
+            StartDate = range[0] |> DateOnly.toUnixTime
+            EndDate = range[1] |> DateOnly.toUnixTime
         }
 
 let updateTournament (connection: #DbConnection) (data: TournamentData) =
@@ -158,8 +162,8 @@ let updateTournament (connection: #DbConnection) (data: TournamentData) =
                     "id" => data.Id
                     "url" => data.Url
                     "name" => data.Name
-                    "start" => data.StartDate.ToDateTime(TimeOnly.MinValue)
-                    "end" => data.EndDate.ToDateTime(TimeOnly.MinValue)
+                    "start" => data.StartDate
+                    "end" => data.EndDate
                 ])
         result |> Result.map (fun _ -> ()) |> Result.defaultWith (fun err -> eprintfn $"{err.Message}")
     }

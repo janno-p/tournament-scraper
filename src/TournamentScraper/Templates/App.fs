@@ -10,7 +10,7 @@ let layout (content: XmlNode list) =
             title [] [encodedText "Hello SaturnServer"]
             link [_rel "stylesheet"; _type "text/css"; _href "/style.css"]
             script [_src "/htmx@1.9.10.min.js"] []
-            script [_src "/sse@1.9.10.js"] []
+            script [_src "/htmx-sse@1.9.10.js"] []
             script [_src "/_hyperscript@0.9.12.min.js"] []
         ]
         body [] [

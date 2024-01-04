@@ -1,8 +1,8 @@
-﻿module Server
+﻿module TournamentScraper.Server
 
 open Dapper
 open Saturn
-open Scraper
+open Tournaments.Extensions
 
 let endpointPipe = pipeline {
     plug head
@@ -18,7 +18,7 @@ let app = application {
     use_static "static"
     use_gzip
     use_dapper "DataSource=database.sqlite"
-    use_scraper
+    use_tournaments
 }
 
 [<EntryPoint>]

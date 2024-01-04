@@ -1,14 +1,25 @@
 ﻿module Sse
 
 open System.Collections.Concurrent
+open System.Threading.Tasks
 open Giraffe
 open Giraffe.ViewEngine
-open Giraffe.ViewEngine.HtmlElements
 open Microsoft.AspNetCore.Http
 open Saturn
+open System
+
+type HttpResponse with
+    member this.WriteEventAsync(event: string, node: XmlNode) : Task =
+        task {
+            let html = (RenderView.AsString.htmlNode node).Replace("\n", "")
+            do! this.WriteAsync($"event: {event}\n")
+            do! this.WriteAsync($"data: {html}\n\n")
+            do! this.Body.FlushAsync()
+        }
 
 type SseMessage =
     | TournamentsLoaded of XmlNode
+    | TournamentLoaded of Guid * XmlNode
 
 let private queue = ConcurrentQueue<SseMessage>()
 
@@ -22,15 +33,11 @@ let private sse next (ctx: HttpContext) =
             do!
                 match queue.TryDequeue() with
                 | true, TournamentsLoaded node ->
-                    task {
-                        let html = (RenderView.AsString.htmlNode node).Replace("\n", "")
-                        do! res.WriteAsync($"event: TournamentsLoaded\ndata: {html}\n\n")
-                        do! res.Body.FlushAsync()
-                    }
-                | _ ->
-                    task {
-                        do! Async.Sleep (System.TimeSpan.FromSeconds 1.)
-                    }
+                    res.WriteEventAsync("TournamentsLoaded", node)
+                | true, TournamentLoaded (id, node) ->
+                    res.WriteEventAsync($"TournamentLoaded/{id:D}", node)
+                | false, _ ->
+                    Task.Delay (TimeSpan.FromSeconds 1.)
         return! text "" next ctx
     }
 
