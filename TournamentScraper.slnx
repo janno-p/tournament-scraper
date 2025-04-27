@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/.sln/">
+    <File Path="README.md" />
+    <File Path="package.json" />
+    <File Path="style.css" />
+    <File Path="paket.dependencies" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/TournamentScraper/TournamentScraper.fsproj" />
+    <Project Path="src/TournamentScraper.AppHost/TournamentScraper.AppHost.fsproj" />
+    <Project Path="src/TournamentScraper.ServiceDefaults/TournamentScraper.ServiceDefaults.fsproj" />
+  </Folder>
+</Solution>

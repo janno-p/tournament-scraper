@@ -1,11 +1,12 @@
-﻿module Playwright
+﻿module TournamentScraper.Playwright
 
-open Database
+open Dapper.FSharp.PostgreSQL
 open System.Data.Common
 open Microsoft.AspNetCore.WebUtilities
 open Microsoft.Playwright
 open System
 open System.Threading.Tasks
+open TournamentScraper.Database
 
 let baseUri = Uri("https://www.tournamentsoftware.com/")
 let organizerId = Guid.Parse("cb9d3127-7f10-422c-9dba-eae804799642")
@@ -74,6 +75,18 @@ let private acceptCookies (getPage: Task<IPage>) =
         return page
     }
 
+let private consent (getPage: Task<IPage>) =
+    task {
+        let! page = getPage
+        
+        printfn "Accepting privacy policies ..."
+
+        let acceptButton = page.FrameLocator("body div iframe").Locator(".btn.green")
+        do! acceptButton.ClickAsync()
+
+        return page
+    }
+
 type private TournamentInfo = {
     Date: string
     Name: string
@@ -112,6 +125,8 @@ let private parseTournamentRowType (rowLocator: ILocator) =
 let private getTournaments (getPage: Task<IPage>) =
     task {
         let! page = getPage
+        
+        printfn "Parsing tournaments list ..."
 
         let content = page.Locator("div#content").Filter(LocatorFilterOptions(Has = page.Locator("h2.content-title").Filter(LocatorFilterOptions(HasText = "Tournaments of"))))
         do! content.WaitForAsync()
@@ -127,46 +142,42 @@ let private getTournaments (getPage: Task<IPage>) =
         return tournamentRows |> Array.choose id
     }
 
-type TournamentData = {
-    Id: Guid
-    Url: string
-    Name: string
-    StartDate: int64
-    EndDate: int64
-}
-
-module DateOnly =
-    let toUnixTime (d: DateOnly) =
-        DateTimeOffset(d.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)).ToUnixTimeSeconds()
-
 module private TournamentData =
-    let fromRow (year: uint) (value: TournamentInfo) =
+    let fromRow (year: uint) (value: TournamentInfo) : Schema.TournamentRow =
         let range = value.Date.Split("to") |> Array.map (fun x -> DateOnly.ParseExact($"{x.Trim()}/{year}", "MM/dd/yyyy"))
         {
-            Id = Guid.Parse((QueryHelpers.ParseQuery(Uri(baseUri, value.Url).Query)["id"]).ToString())
-            Url = value.Url
-            Name = value.Name
-            StartDate = range[0] |> DateOnly.toUnixTime
-            EndDate = range[1] |> DateOnly.toUnixTime
+            id = Guid.Parse((QueryHelpers.ParseQuery(Uri(baseUri, value.Url).Query)["id"]).ToString())
+            url = value.Url
+            name = value.Name
+            start_date = range[0].ToDateTime(TimeOnly.MinValue)
+            end_date = range[1].ToDateTime(TimeOnly.MinValue)
         }
 
-let updateTournament (connection: #DbConnection) (data: TournamentData) =
+let updateTournament (connection: #DbConnection) (tournament: Schema.TournamentRow) =
     task {
-        let! result =
-            execute connection
-                """
-                insert into tournaments (id, url, name, start_date, end_date) values (@id, @url, @name, @start, @end)
-                on conflict (id) do update set url=@url, name=@name, start_date=@start, end_date=@end
-                """
-                (dict [
-                    "id" => data.Id
-                    "url" => data.Url
-                    "name" => data.Name
-                    "start" => data.StartDate
-                    "end" => data.EndDate
-                ])
-        result |> Result.map (fun _ -> ()) |> Result.defaultWith (fun err -> eprintfn $"{err.Message}")
-    }
+        try
+            let! countRows =
+                select {
+                    for t in Schema.tournaments do
+                    where (t.id = tournament.id)
+                    count "id" "Value"
+                } |> connection.SelectAsync<{| Value: int64 |}>
+            let!_ =
+                if countRows |> Seq.map _.Value |> Seq.head > 0 then
+                    update {
+                        for t in Schema.tournaments do
+                        set tournament
+                        where (t.id = tournament.id)
+                    } |> connection.UpdateAsync
+                else
+                    insert {
+                        into Schema.tournaments
+                        value tournament
+                    } |> connection.InsertAsync
+            ()
+        with ex ->
+            eprintfn $"{ex.Message}"
+    } :> Task
 
 let updateTournaments (connection: #DbConnection) =
     task {
@@ -176,8 +187,9 @@ let updateTournaments (connection: #DbConnection) =
             |> getBrowser Edge
             |> getPage (Uri(baseUri, $"find.aspx?a=7&q={organizerId:D}"))
             |> acceptCookies
+            |> consent
             |> getTournaments
-        let folder (acc: uint option * ResizeArray<TournamentData>) (row: TournamentRow) =
+        let folder (acc: uint option * ResizeArray<Schema.TournamentRow>) (row: TournamentRow) =
             let year, lst = acc
             match row, year with
             | Year year, _ -> (Some year, lst)

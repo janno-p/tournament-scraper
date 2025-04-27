@@ -1,10 +1,10 @@
-﻿module Database
+﻿module TournamentScraper.Database
 
 open Dapper
+open Dapper.FSharp.PostgreSQL
+open System
 open System.Data.Common
 open System.Collections.Generic
-
-let inline (=>) k v = k, box v
 
 let execute (connection: #DbConnection) (sql: string) data =
     task {
@@ -40,3 +40,14 @@ let querySingle (connection: #DbConnection) (sql: string) (parameters: IDictiona
         with
         | ex -> return Error ex
     }
+
+module Schema =
+    type TournamentRow = {
+        id: Guid
+        name: string
+        url: string
+        start_date: DateTime
+        end_date: DateTime
+    }
+
+    let tournaments = table'<TournamentRow> "tournaments"

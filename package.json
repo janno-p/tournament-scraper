@@ -1,14 +1,29 @@
 {
     "scripts": {
-        "css": "npx tailwindcss -i ./style.css -o ./src/TournamentScraper/static/style.css",
-        "csswatch": "npx tailwindcss -i ./style.css -o ./src/TournamentScraper/static/style.css --watch",
-        "fsbuild": "dotnet build",
-        "build": "npm run fsbuild && dotnet run",
-        "watch": "start npm run csswatch & start npm run fswatch",
-        "migrate": "powershell dotnet evolve migrate '@args.txt'",
-        "fswatch": "dotnet watch run --project src/TournamentScraper/TournamentScraper.fsproj"
+        "copy": "npx copy-files-from-to",
+        "css": "npx @tailwindcss/cli -i ./style.css -o ./src/TournamentScraper/static/style.css",
+        "csswatch": "npx @tailwindcss/cli -i ./style.css -o ./src/TournamentScraper/static/style.css --watch=always"
     },
     "devDependencies": {
-        "tailwindcss": "^3.4.0"
-    }
+        "@tailwindcss/cli": "^4.1.4",
+        "alpinejs": "^3.14.9",
+        "copy-files-from-to": "^3.12.1",
+        "htmx-ext-sse": "^2.2.3",
+        "htmx.org": "^2.0.4",
+        "tailwindcss": "^4.1.4"
+    },
+    "copyFiles": [
+        {
+            "from": "node_modules/alpinejs/dist/cdn.min.js",
+            "to": "src/TournamentScraper/static/alpinejs.js"
+        },
+        {
+            "from": "node_modules/htmx-ext-sse/dist/sse.min.js",
+            "to": "src/TournamentScraper/static/htmx-sse.js"
+        },
+        {
+            "from": "node_modules/htmx.org/dist/htmx.min.js",
+            "to": "src/TournamentScraper/static/htmx.js"
+        }
+    ]
 }

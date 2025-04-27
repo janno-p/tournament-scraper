@@ -1,7 +1,9 @@
 CREATE TABLE tournaments (
-    id TEXT NOT NULL PRIMARY KEY,
-    url TEXT NOT NULL,
-    name TEXT NOT NULL,
-    start_date INTEGER NOT NULL,
-    end_date INTEGER NOT NULL
+    id UUID NOT NULL,
+    url VARCHAR(1000) NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    CONSTRAINT pk_tournaments PRIMARY KEY (id),
+    CONSTRAINT uq_tournaments_url UNIQUE (url)
 );

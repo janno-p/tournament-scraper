@@ -3,22 +3,25 @@
   "isRoot": true,
   "tools": {
     "paket": {
-      "version": "8.0.0",
+      "version": "9.0.2",
       "commands": [
         "paket"
-      ]
+      ],
+      "rollForward": false
     },
     "evolve.tool": {
       "version": "3.2.0",
       "commands": [
         "evolve"
-      ]
+      ],
+      "rollForward": false
     },
     "microsoft.playwright.cli": {
       "version": "1.2.3",
       "commands": [
         "playwright"
-      ]
+      ],
+      "rollForward": false
     }
   }
 }

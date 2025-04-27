@@ -3,9 +3,10 @@
 open System
 open Akka.Configuration
 open Akka.FSharp
-open Dapper
 open Helpers
 open Microsoft.Extensions.DependencyInjection
+open TournamentScraper
+open TournamentScraper.Dapper
 
 type TournamentsActorMessages =
     | ReloadTournaments

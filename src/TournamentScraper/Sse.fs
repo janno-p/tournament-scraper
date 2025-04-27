@@ -1,49 +1,49 @@
-﻿module Sse
+﻿module TournamentScraper.Sse
 
 open System.Collections.Concurrent
 open System.Threading.Tasks
-open Giraffe
-open Giraffe.ViewEngine
 open Microsoft.AspNetCore.Http
-open Saturn
+open Oxpecker
+open Oxpecker.ViewEngine
 open System
 
-type HttpResponse with
-    member this.WriteEventAsync(event: string, node: XmlNode) : Task =
-        task {
-            let html = (RenderView.AsString.htmlNode node).Replace("\n", "")
-            do! this.WriteAsync($"event: {event}\n")
-            do! this.WriteAsync($"data: {html}\n\n")
-            do! this.Body.FlushAsync()
-        }
+let sendEventResponse event html (ctx: HttpContext) =
+    task {
+        let html = (Render.toString html).Replace("\n", "")
+        do! ctx.Response.WriteAsync($"event: {event}\n")
+        do! ctx.Response.WriteAsync($"data: {html}\n\n")
+        do! ctx.Response.Body.FlushAsync()
+    } :> Task
 
 type SseMessage =
-    | TournamentsLoaded of XmlNode
-    | TournamentLoaded of Guid * XmlNode
+    | TournamentsLoaded of RegularNode
+    | TournamentLoaded of Guid * RegularNode
 
 let private queue = ConcurrentQueue<SseMessage>()
 
-let private sse next (ctx: HttpContext) =
-    task {
-        let res = ctx.Response
-        ctx.SetStatusCode 200
-        ctx.SetHttpHeader ("Content-Type", "text/event-stream")
-        ctx.SetHttpHeader ("Cache-Control", "no-cache")
-        while true do
+let private sse : EndpointHandler =
+    fun ctx -> task {
+        do! setStatusCode StatusCodes.Status200OK ctx
+        do! setHttpHeader "content-type" "text/event-stream" ctx
+        do! setHttpHeader "cache-control" "no-cache" ctx
+        while not ctx.RequestAborted.IsCancellationRequested do
             do!
                 match queue.TryDequeue() with
                 | true, TournamentsLoaded node ->
-                    res.WriteEventAsync("TournamentsLoaded", node)
+                    printfn $"TournamentsLoaded: {node}"
+                    sendEventResponse "TournamentsLoaded" node ctx
                 | true, TournamentLoaded (id, node) ->
-                    res.WriteEventAsync($"TournamentLoaded/{id:D}", node)
+                    printfn $"TournamentLoaded/{id:D}: {node}"
+                    sendEventResponse $"TournamentLoaded/{id:D}" node ctx
                 | false, _ ->
                     Task.Delay (TimeSpan.FromSeconds 1.)
-        return! text "" next ctx
+        ()
     }
 
 let enqueue msg =
+    printfn $"Enqueue: {msg}"
     queue.Enqueue(msg)
 
-let sseRouter = router {
-    get "" sse
-}
+let endpoints: Endpoint list = [
+    GET [ route "/" sse ]
+]

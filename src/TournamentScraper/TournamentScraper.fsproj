@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="static\*.*">
@@ -14,27 +14,27 @@
     <Compile Include="Database.fs" />
     <Compile Include="Playwright.fs" />
     <Compile Include="Sse.fs" />
-    <Compile Include="Templates\App.fs" />
-    <Compile Include="Templates\MainContent.fs" />
-    <Compile Include="Templates\Index.fs" />
-    <Compile Include="Templates\InternalError.fs" />
-    <Compile Include="Templates\NotFound.fs" />
-    <Compile Include="Tournaments\Helpers.fs" />
-    <Compile Include="Tournaments\Models.fs" />
-    <Compile Include="Tournaments\Views.fs" />
-    <Compile Include="Tournaments\Actors.fs" />
-    <Compile Include="Tournaments\Controllers.fs" />
-    <Compile Include="Tournaments\Module.fs" />
-    <Compile Include="Router.fs" />
+    <Compile Include="Templates.Stylebook.fs" />
+    <Compile Include="Templates.App.fs" />
+    <Compile Include="Templates.MainContent.fs" />
+    <Compile Include="Templates.Index.fs" />
+    <Compile Include="Templates.Errors.fs" />
+    <Compile Include="Tournaments.Helpers.fs" />
+    <Compile Include="Tournaments.Models.fs" />
+    <Compile Include="Tournaments.Views.fs" />
+    <Compile Include="Tournaments.Actors.fs" />
+    <Compile Include="Tournaments.Controllers.fs" />
+    <Compile Include="Endpoints.fs" />
     <Compile Include="Program.fs" />
+    <Content Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\tailwind.config.js">
-      <Link>tailwind.config.js</Link>
-    </Content>
     <Content Include="*.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TournamentScraper.ServiceDefaults\TournamentScraper.ServiceDefaults.fsproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
