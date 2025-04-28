@@ -4,7 +4,6 @@ open System
 open System.IO
 open System.IO.Compression
 open System.Threading.Tasks
-open Dapper
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Http
 open Microsoft.AspNetCore.ResponseCompression
@@ -12,6 +11,7 @@ open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Oxpecker
+open TournamentScraper.Database
 open TournamentScraper.ServiceDefaults
 open TournamentScraper.Templates.Errors
 
@@ -97,7 +97,6 @@ let configureServices (builder: WebApplicationBuilder) =
 
 [<EntryPoint>]
 let main args =
-    Dapper.FSharp.PostgreSQL.OptionTypes.register()
     let options = WebApplicationOptions(Args = args, WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "static"))
     let builder = WebApplication.CreateBuilder(options)
     configureServices builder

@@ -2,16 +2,16 @@ source https://api.nuget.org/v3/index.json
 
 storage: none
 nuget Akka.FSharp
+nuget AngleSharp
 nuget Aspire.Hosting.PostgreSQL
 nuget Aspire.Npgsql
-nuget Dapper
-nuget Dapper.FSharp
 nuget FSharp.Control.TaskSeq
 nuget Microsoft.AspNetCore.OpenApi
 nuget Microsoft.Data.Sqlite
 nuget Microsoft.Extensions.Http.Resilience
 nuget Microsoft.Extensions.ServiceDiscovery
 nuget Microsoft.Playwright
+nuget Npgsql.FSharp
 nuget OpenTelemetry.Exporter.OpenTelemetryProtocol
 nuget OpenTelemetry.Extensions.Hosting
 nuget OpenTelemetry.Instrumentation.AspNetCore

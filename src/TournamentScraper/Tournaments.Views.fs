@@ -1,8 +1,9 @@
 ﻿namespace TournamentScraper.Tournaments
 
+open System
 open Oxpecker.Htmx
 open Oxpecker.ViewEngine
-open System
+open TournamentScraper.Domain
 open TournamentScraper.Templates
 
 module View =
@@ -35,11 +36,15 @@ module View =
             ul(class' = "border mt-4") { yield! tournaments |> List.map tournamentRow }
         }
 
-    let show (tournament: Tournament) : HtmlElement =
+    let show (tournament: Tournament) (events: TournamentEvent list) : HtmlElement =
         div() {
             h1() { tournament.Name }
             em() { $"({tournamentDate tournament})" }
             reloadTournamentButton tournament.Id
+            ul() {
+                for e in events do
+                    li() { e.Name }
+            }
         }
 
     let loadingButton =

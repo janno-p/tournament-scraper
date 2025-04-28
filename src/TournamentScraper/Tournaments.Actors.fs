@@ -6,7 +6,7 @@ open Akka.FSharp
 open Helpers
 open Microsoft.Extensions.DependencyInjection
 open TournamentScraper
-open TournamentScraper.Dapper
+open TournamentScraper.Database
 
 type TournamentsActorMessages =
     | ReloadTournaments
@@ -27,14 +27,20 @@ let createTournamentsActor (applicationServices: IServiceProvider) =
                         use scope = applicationServices.CreateScope()
                         let! connection = scope.ServiceProvider.GetRequiredService<SqlConnectionFactory>().GetOpenConnectionAsync()
                         printfn "Reloading tournaments ..."
-                        let! count = Playwright.updateTournaments connection
+                        use! playwright = Microsoft.Playwright.Playwright.CreateAsync()
+                        let! page = Playwright.openNewPage playwright
+                        let! count = Playwright.updateTournaments connection page
                         printfn $"Total of {count} tournaments updated"
                         Sse.enqueue (Sse.TournamentsLoaded View.reloadTournamentsButton)
                     })
                 | ReloadTournament key ->
                     runActorTask (fun () -> task {
+                        use scope = applicationServices.CreateScope()
+                        let! connection = scope.ServiceProvider.GetRequiredService<SqlConnectionFactory>().GetOpenConnectionAsync()
+                        use! playwright = Microsoft.Playwright.Playwright.CreateAsync()
+                        let! page = Playwright.openNewPage playwright
                         printfn $"Reloading tournament details ..."
-                        do! Async.Sleep (TimeSpan.FromSeconds 5.)
+                        do! Playwright.TournamentEvents.load key false connection page
                         Sse.enqueue (Sse.TournamentLoaded (key, View.reloadTournamentButton key))
                     })
                 return! loop()

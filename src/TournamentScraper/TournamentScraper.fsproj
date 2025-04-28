@@ -10,7 +10,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dapper.fs" />
+    <Compile Include="Domain.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Playwright.fs" />
     <Compile Include="Sse.fs" />

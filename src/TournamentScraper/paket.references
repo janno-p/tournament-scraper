@@ -1,11 +1,11 @@
 Akka.FSharp
+AngleSharp
 Aspire.Npgsql
-Dapper
-Dapper.FSharp
 FSharp.Control.TaskSeq
 Microsoft.AspNetCore.OpenApi
 Microsoft.Data.Sqlite
 Microsoft.Playwright
+Npgsql.FSharp
 Oxpecker
 Oxpecker.Htmx
 Oxpecker.OpenApi

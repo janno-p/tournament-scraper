@@ -29,7 +29,15 @@ let private tournamentsHandler : EndpointHandler =
 let private tournamentHandler (key: Guid) : EndpointHandler =
     fun ctx -> task {
         let! tournament = Model.get ctx key
-        let view = tournament |> Option.map View.show |> Option.defaultValue notFound
+        let! view =
+            match tournament with
+            | Some tournament ->
+                task {
+                    let! events = Model.getEvents ctx key
+                    return View.show tournament events
+                }
+            | None ->
+                System.Threading.Tasks.Task.FromResult(notFound)
         do! htmlView (App.layout view ctx) ctx
     }
 
